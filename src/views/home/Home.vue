@@ -7,13 +7,11 @@
           <span>企业ERP管理系统</span>
         </div>
         <div class="profile flex center">
-          <el-dropdown>
-            <el-badge :value="3" class="item">
+          <el-badge :value="3" class="item">
               <span class="el-dropdown-link">
                 消息
               </span>
             </el-badge>
-          </el-dropdown>
           <el-dropdown>
             <span class="el-dropdown-link">
               亲爱的xxx，你好<i class="el-icon-arrow-down el-icon--right"></i>
@@ -31,58 +29,83 @@
       <div class="container">
         <div class="aside">
           <el-menu
-            default-active="2"
+            default-active="1"
             class="el-menu-vertical-demo"
-            @open="handleOpen"
-            @close="handleClose"
             background-color="#545c64"
             text-color="#fff"
             active-text-color="#ffd04b"
           >
             <el-submenu index="1">
               <template slot="title">
-                <i class="el-icon-location"></i>
-                <span>导航一</span>
+                <i class="el-icon-setting"></i>
+                <span>系统管理</span>
               </template>
-              <el-menu-item-group>
-                <template slot="title">分组一</template>
-                <el-menu-item index="1-1">选项1</el-menu-item>
-                <el-menu-item index="1-2">选项2</el-menu-item>
-              </el-menu-item-group>
-              <el-menu-item-group title="分组2">
-                <el-menu-item index="1-3">选项3</el-menu-item>
-              </el-menu-item-group>
-              <el-submenu index="1-4">
-                <template slot="title">选项4</template>
-                <el-menu-item index="1-4-1">选项1</el-menu-item>
-              </el-submenu>
+              <el-menu-item index="1-2" >
+                <i class="el-icon-user"></i>
+                <!-- <span slot="title" >人员管理</span> -->
+                <router-link to="/user" slot="title" tag="span">人员管理</router-link>
+              </el-menu-item>
+              <el-menu-item index="1-3">
+                <i class="el-icon-s-custom"></i>
+                <router-link to="/dashboard" slot="title" tag="span">部门管理</router-link>
+              </el-menu-item>
+              <el-menu-item index="1-4">
+                <i class="el-icon-document-remove"></i>
+                <span slot="title">角色管理</span>
+              </el-menu-item>
+              <el-menu-item index="1-5">
+                <i class="el-icon-key"></i>
+                <span slot="title">权限管理</span>
+              </el-menu-item>
             </el-submenu>
-            <el-menu-item index="2">
-              <i class="el-icon-menu"></i>
-              <span slot="title">导航二</span>
-            </el-menu-item>
-            <el-menu-item index="3" disabled>
-              <i class="el-icon-document"></i>
-              <span slot="title">导航三</span>
-            </el-menu-item>
-            <el-menu-item index="4">
-              <i class="el-icon-setting"></i>
-              <span slot="title">导航四</span>
-            </el-menu-item>
+            <el-submenu index="2">
+              <template slot="title">
+                <i class="el-icon-service"></i>
+                <span>运营中心</span>
+              </template>
+              <el-menu-item index="2-1">
+                <i class="el-icon-medal"></i>
+                <span slot="title">团队管理</span>
+              </el-menu-item>
+              <el-menu-item index="2-2">
+                <i class="el-icon-data-line"></i>
+                <span slot="title">业绩报表</span>
+              </el-menu-item>
+              <el-menu-item index="2-3">
+                <i class="el-icon-phone"></i>
+                <span slot="title">客户回访</span>
+              </el-menu-item>
+            </el-submenu>
           </el-menu>
+
+         
         </div>
-        <div class="main"></div>
+        <div class="main">
+          <div class="breadnav">
+            <el-breadcrumb separator="/">
+              <el-breadcrumb-item :to="{ path: '/s' }"
+                >系统管理</el-breadcrumb-item
+              >
+              <el-breadcrumb-item><a href="/">人员管理</a></el-breadcrumb-item>
+            </el-breadcrumb>
+          </div>
+          <el-divider></el-divider>
+          <div class="content">
+            123
+            <router-view></router-view>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+
 export default {
   data() {
     return {};
   },
-  components: {},
   created() {},
   methods: {
     handleOpen(key, keyPath) {
@@ -90,6 +113,9 @@ export default {
     },
     handleClose(key, keyPath) {
       console.log(key, keyPath);
+    },
+    go(){
+        this.$router.push('user')
     }
   }
 };
@@ -113,14 +139,13 @@ export default {
   height: 80px;
   display: flex;
   justify-content: space-between;
-  border-bottom:1px solid #393D49; 
+  border-bottom: 1px solid #393d49;
 }
 
 .header .logo {
   width: 260px;
   color: #dfdddd;
   font-size: 22px;
-  
 }
 
 .header .logo img {
@@ -131,7 +156,7 @@ export default {
 .header .profile {
   justify-content: flex-start;
 }
-.header .profile .el-dropdown {
+.header .profile,.header .profile .el-dropdown {
   font-size: 15px;
   color: #dfdddd;
   margin: 12px;
@@ -142,5 +167,23 @@ export default {
 }
 .el-menu {
   border-right: none;
+}
+.main {
+  width: 100%;
+  padding: 20px;
+  background-color: #f2f2f2;
+}
+.main .el-breadcrumb {
+  font-size: 15px;
+}
+.main .breadnav {
+  padding: 15px;
+  background-color: #fff;
+}
+
+.main .content {
+  background-color: #fff;
+  margin-top: 15px;
+  padding: 15px;
 }
 </style>
