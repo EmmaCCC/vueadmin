@@ -3,23 +3,22 @@
     <div class="container flex-column">
       <div class="header">
         <div class="logo flex center">
-          <img src="@/assets/logo.png" alt="" />
+          <img src="@/assets/logo.png" alt />
           <span>企业ERP管理系统</span>
         </div>
         <div class="profile flex center">
           <el-badge :value="3" class="item">
-              <span class="el-dropdown-link">
-                消息
-              </span>
-            </el-badge>
-          <el-dropdown>
+            <span class="el-dropdown-link">消息</span>
+          </el-badge>
+          <el-dropdown @command="handleCommand">
             <span class="el-dropdown-link">
-              亲爱的xxx，你好<i class="el-icon-arrow-down el-icon--right"></i>
+              亲爱的xxx，你好
+              <i class="el-icon-arrow-down el-icon--right"></i>
             </span>
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item>个人信息</el-dropdown-item>
               <el-dropdown-item>修改密码</el-dropdown-item>
-              <el-dropdown-item>注销登录</el-dropdown-item>
+              <el-dropdown-item command="logout">注销登录</el-dropdown-item>
               <el-dropdown-item disabled>双皮奶</el-dropdown-item>
               <el-dropdown-item divided>蚵仔煎</el-dropdown-item>
             </el-dropdown-menu>
@@ -29,25 +28,26 @@
       <div class="container">
         <div class="aside">
           <el-menu
-            default-active="1"
+            :default-active="$router.path"
             class="el-menu-vertical-demo"
             background-color="#545c64"
             text-color="#fff"
             active-text-color="#ffd04b"
+            router
           >
             <el-submenu index="1">
               <template slot="title">
                 <i class="el-icon-setting"></i>
                 <span>系统管理</span>
               </template>
-              <el-menu-item index="1-2" >
+              <el-menu-item index="/user">
                 <i class="el-icon-user"></i>
-                <!-- <span slot="title" >人员管理</span> -->
-                <router-link to="/user" slot="title" tag="span">人员管理</router-link>
+                <span slot="title">人员管理</span>
+                <!-- <router-link to="/user" slot="title" tag="span">人员管理</router-link> -->
               </el-menu-item>
-              <el-menu-item index="1-3">
+              <el-menu-item index="/role">
                 <i class="el-icon-s-custom"></i>
-                <router-link to="/dashboard" slot="title" tag="span">部门管理</router-link>
+                <span slot="title">部门管理</span>
               </el-menu-item>
               <el-menu-item index="1-4">
                 <i class="el-icon-document-remove"></i>
@@ -77,21 +77,16 @@
               </el-menu-item>
             </el-submenu>
           </el-menu>
-
-         
         </div>
         <div class="main">
           <div class="breadnav">
             <el-breadcrumb separator="/">
-              <el-breadcrumb-item :to="{ path: '/s' }"
-                >系统管理</el-breadcrumb-item
-              >
-              <el-breadcrumb-item><a href="/">人员管理</a></el-breadcrumb-item>
+              <el-breadcrumb-item>系统管理</el-breadcrumb-item>
+              <el-breadcrumb-item>人员管理</el-breadcrumb-item>
             </el-breadcrumb>
           </div>
           <el-divider></el-divider>
           <div class="content">
-            123
             <router-view></router-view>
           </div>
         </div>
@@ -101,21 +96,16 @@
 </template>
 
 <script>
-
 export default {
   data() {
     return {};
   },
   created() {},
   methods: {
-    handleOpen(key, keyPath) {
-      console.log(key, keyPath);
-    },
-    handleClose(key, keyPath) {
-      console.log(key, keyPath);
-    },
-    go(){
-        this.$router.push('user')
+    handleCommand(command){
+      if(command === 'logout'){
+        this.$router.push('login');
+      }
     }
   }
 };
@@ -124,6 +114,7 @@ export default {
 .home {
   height: 100%;
 }
+
 .container,
 .aside,
 .main {
@@ -156,7 +147,8 @@ export default {
 .header .profile {
   justify-content: flex-start;
 }
-.header .profile,.header .profile .el-dropdown {
+.header .profile,
+.header .profile .el-dropdown {
   font-size: 15px;
   color: #dfdddd;
   margin: 12px;
@@ -169,9 +161,9 @@ export default {
   border-right: none;
 }
 .main {
-  width: 100%;
   padding: 20px;
   background-color: #f2f2f2;
+  flex: 1;
 }
 .main .el-breadcrumb {
   font-size: 15px;

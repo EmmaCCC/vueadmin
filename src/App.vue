@@ -1,20 +1,21 @@
 <template>
   <div id="app">
-    <home></home>
+    <transition name="fade"
+		            mode="out-in">
+			<router-view></router-view>
+		</transition>
   </div>
 </template>
 
 <script>
-const Home = () => import("@/views/home/Home");
-
 export default {
   name: "app",
-  components: {
-    Home
-  }
+  components: {}
 };
 </script>
 
-<style>
+<style scoped>
 @import "./assets/css/base.css";
+
+
 </style>

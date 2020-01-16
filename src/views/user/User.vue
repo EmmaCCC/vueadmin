@@ -1,24 +1,46 @@
 <template>
   <div class="user">
+    <el-form :inline="true" class="demo-form-inline">
+      <el-form-item label="审批人">
+        <el-input placeholder="审批人" value="哈哈"></el-input>
+      </el-form-item>
+      <el-form-item label="活动区域">
+        <el-select placeholder="活动区域" value="">
+          <el-option label="区域一" value="shanghai"></el-option>
+          <el-option label="区域二" value="beijing"></el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary" >查询</el-button>
+      </el-form-item>
+    </el-form>
     <el-table :data="tableData" border style="width: 100%">
-      <el-table-column fixed prop="date" label="日期" width="150">
-      </el-table-column>
-      <el-table-column prop="name" label="姓名" width="120"> </el-table-column>
-      <el-table-column prop="province" label="省份" width="120">
-      </el-table-column>
-      <el-table-column prop="city" label="市区" width="120"> </el-table-column>
-      <el-table-column prop="address" label="地址" width="300">
-      </el-table-column>
-      <el-table-column prop="zip" label="邮编" width="120"> </el-table-column>
-      <el-table-column fixed="right" label="操作" width="100">
+      <el-table-column fixed prop="date" label="日期"></el-table-column>
+      <el-table-column prop="name" label="姓名"></el-table-column>
+      <el-table-column prop="province" label="省份"></el-table-column>
+      <el-table-column prop="city" label="市区"></el-table-column>
+      <el-table-column prop="address" label="地址"></el-table-column>
+      <el-table-column prop="zip" label="邮编" width="120"></el-table-column>
+      <el-table-column label="操作" width="250">
         <template slot-scope="scope">
-          <el-button @click="handleClick(scope.row)" type="text" size="small"
-            >查看</el-button
-          >
-          <el-button type="text" size="small">编辑</el-button>
+          <el-button @click="handleClick(scope.row)" type="primary" size="small">查看</el-button>
+          <el-button type="success" size="small">编辑</el-button>
+          <el-button type="danger" size="small">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
+
+    <el-pagination
+      style="margin-top:15px;"
+      @size-change="sizeChange"
+      @current-change="currentChange"
+      :current-page="query.page"
+      :page-sizes="[10, 20, 30]"
+      :page-size="query.size"
+      layout="total, sizes, prev, pager, next, jumper"
+      :total="query.total"
+      background
+    ></el-pagination>
   </div>
 </template>
 
@@ -26,6 +48,11 @@
 export default {
   data() {
     return {
+      query: {
+        page: 1,
+        size: 10,
+        total: 0
+      },
       tableData: [
         {
           date: "2016-05-02",
@@ -65,6 +92,12 @@ export default {
   components: {},
   created() {},
   methods: {
+    currentChange(page) {
+      this.query.page = page;
+    },
+    sizeChange(size) {
+      this.query.size = size;
+    },
     handleClick(row) {
       console.log(row);
     }
