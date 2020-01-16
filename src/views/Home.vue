@@ -87,7 +87,9 @@
           </div>
           <el-divider></el-divider>
           <div class="content">
-            <router-view></router-view>
+            <transition name="fade" mode="out-in">
+              <router-view></router-view>
+            </transition>
           </div>
         </div>
       </div>
@@ -102,15 +104,24 @@ export default {
   },
   created() {},
   methods: {
-    handleCommand(command){
-      if(command === 'logout'){
-        this.$router.push('login');
+    handleCommand(command) {
+      if (command === "logout") {
+        this.$router.push("login");
       }
     }
   }
 };
 </script>
 <style scoped>
+.fade-enter-active,
+.fade-leave-active {
+  transition: all 0.2s ease;
+}
+
+.fade-enter,
+.fade-leave-active {
+  opacity: 0;
+}
 .home {
   height: 100%;
 }
