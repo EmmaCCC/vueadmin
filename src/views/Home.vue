@@ -18,9 +18,7 @@
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item>个人信息</el-dropdown-item>
               <el-dropdown-item>修改密码</el-dropdown-item>
-              <el-dropdown-item command="logout">注销登录</el-dropdown-item>
-              <el-dropdown-item disabled>双皮奶</el-dropdown-item>
-              <el-dropdown-item divided>蚵仔煎</el-dropdown-item>
+              <el-dropdown-item command="logout" divided>注销登录</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
         </div>
@@ -28,13 +26,17 @@
       <div class="container">
         <div class="aside">
           <el-menu
-            :default-active="$router.path"
+            :default-active="'/dashboard'"
             class="el-menu-vertical-demo"
             background-color="#545c64"
             text-color="#fff"
             active-text-color="#ffd04b"
             router
           >
+            <el-menu-item index="/dashboard">
+              <i class="el-icon-monitor"></i>
+              <span slot="title">控制台</span>
+            </el-menu-item>
             <el-submenu index="1">
               <template slot="title">
                 <i class="el-icon-setting"></i>
@@ -43,7 +45,6 @@
               <el-menu-item index="/user">
                 <i class="el-icon-user"></i>
                 <span slot="title">人员管理</span>
-                <!-- <router-link to="/user" slot="title" tag="span">人员管理</router-link> -->
               </el-menu-item>
               <el-menu-item index="/role">
                 <i class="el-icon-s-custom"></i>
@@ -115,7 +116,7 @@ export default {
 <style scoped>
 .fade-enter-active,
 .fade-leave-active {
-  transition: all 0.2s ease;
+  transition: all 0.1s ease;
 }
 
 .fade-enter,

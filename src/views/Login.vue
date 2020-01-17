@@ -197,12 +197,7 @@ $light_gray:#eee;
     right: 0;
     bottom: 6px;
   }
-
-  @media only screen and (max-width: 470px) {
-    .thirdparty-button {
-      display: none;
-    }
-  }
+ 
 }
 
 .fade-enter-active,

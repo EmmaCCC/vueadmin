@@ -16,6 +16,9 @@ export default {
 
 <style scoped>
 @import "./assets/css/base.css";
-
+.fade-enter-active,
+.fade-leave-active {
+  transition: all 0.01s ease;
+}
 
 </style>
