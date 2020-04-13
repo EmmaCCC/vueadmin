@@ -1,21 +1,31 @@
 <template>
   <div>
-      dashboard
+    dashboard
   </div>
 </template>
 
 <script>
+import http from "@/utils/http";
+console.log(http);
+
 export default {
   props: {},
   data() {
-    return {
-    };
+    return {};
   },
   components: {},
-  created() {},
-  methods: {},
+  created() {
+    this.getData();
+  },
+  methods: {
+    getData() {
+      http.get("api/values",null,(res)=>{
+        console.log(res);
+      },error=>{
+        console.log(error);
+      })
+    }
+  }
 };
 </script>
-<style lang="scss" scoped>
-
-</style>
+<style lang="scss" scoped></style>
