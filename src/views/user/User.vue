@@ -33,7 +33,7 @@
     <el-pagination
       style="margin-top:15px;"
       @size-change="sizeChange"
-      @current-change="currentChange"
+      @current-change="pageChange"
       :current-page="query.page"
       :page-sizes="[10, 20, 30]"
       :page-size="query.size"
@@ -92,7 +92,7 @@ export default {
   components: {},
   created() {},
   methods: {
-    currentChange(page) {
+    pageChange(page) {
       this.query.page = page;
     },
     sizeChange(size) {
