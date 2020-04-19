@@ -44,7 +44,7 @@
 </template>
 
 <script>
-
+import http from '@/utils/http';
 
 export default {
   name: 'Login',
@@ -54,7 +54,7 @@ export default {
     return {
       loginForm: {
         username: 'admin',
-        password: '111111'
+        password: '123'
       },
       loginRules: {
         username: [{ required: true, trigger: 'blur' }],
@@ -74,7 +74,12 @@ export default {
   
   methods: {
     login(){
-        this.$router.push('/');
+       http.post('api/auth/token',this.loginForm,res=>{
+         console.log(res);
+         this.$cookies.set('token', res.data.token,res.data.expires);
+         this.$cookies.set('refreshToken', res.data.token,res.data.expires);
+         this.$router.push('/');
+       })
     }
     //https://github.com/taylorchen709/vue-admin,
     //https://github.com/PanJiaChen/vue-admin-template

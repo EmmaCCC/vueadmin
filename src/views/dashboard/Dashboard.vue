@@ -6,7 +6,7 @@
 
 <script>
 import http from "@/utils/http";
-console.log(http);
+
 
 export default {
   props: {},
