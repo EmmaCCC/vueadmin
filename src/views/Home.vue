@@ -18,7 +18,9 @@
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item>个人信息</el-dropdown-item>
               <el-dropdown-item>修改密码</el-dropdown-item>
-              <el-dropdown-item command="logout" divided>注销登录</el-dropdown-item>
+              <el-dropdown-item command="logout" divided
+                >注销登录</el-dropdown-item
+              >
             </el-dropdown-menu>
           </el-dropdown>
         </div>
@@ -32,6 +34,7 @@
             text-color="#fff"
             active-text-color="#ffd04b"
             router
+            @select="selectMenu"
           >
             <el-menu-item index="/dashboard">
               <i class="el-icon-monitor"></i>
@@ -88,9 +91,25 @@
           </div>
           <el-divider></el-divider>
           <div class="content">
-            <transition name="fade" mode="out-in">
+            <!-- <transition name="fade" mode="out-in">
               <router-view></router-view>
-            </transition>
+            </transition> -->
+            <el-tabs
+              v-model="currentTab"
+              type="border-card"
+              closable
+              @tab-remove="removeTab"
+              @tab-click="clickTab"
+            >
+              <el-tab-pane
+                v-for="item in tabs"
+                :key="item.name"
+                :label="item.title"
+                :name="item.name"
+              >
+                <router-view></router-view>
+              </el-tab-pane>
+            </el-tabs>
           </div>
         </div>
       </div>
@@ -101,16 +120,75 @@
 <script>
 export default {
   data() {
-    return {};
+    return {
+      currentTab: "/role",
+      tabs: [
+        {
+          title: "Tab 1",
+          name: "/role",
+          content: "/role",
+        },
+        {
+          title: "Tab 2",
+          name: "/user",
+          content: "/user",
+        },
+      ],
+    };
   },
-  created() {},
+  created() {
+    console.log(this.$router);
+  },
   methods: {
     handleCommand(command) {
       if (command === "logout") {
         this.$router.push("login");
       }
-    }
-  }
+    },
+    selectMenu(index, indexPath) {
+      var tab = this.tabs.findIndex((a) => a.name == index);
+      if (tab < 0) {
+        this.tabs.push({
+          title: "Tab " + (this.tabs.length + 1).toString(),
+          name: index,
+          content: index,
+        });
+      }
+      this.currentTab = index;
+    },
+    clickTab(tab) {
+      if (this.$route.path != tab.name) {
+        var route = tab.name.substring(1);
+        this.$router.push(route);
+      }
+    },
+    addTab(targetName) {
+      let newTabName = ++this.tabIndex + "";
+      this.tabs.push({
+        title: "New Tab",
+        name: newTabName,
+        content: "New Tab content",
+      });
+      this.currentTab = newTabName;
+    },
+    removeTab(targetName) {
+      let tabs = this.tabs;
+      let activeName = this.currentTab;
+      if (activeName === targetName) {
+        tabs.forEach((tab, index) => {
+          if (tab.name === targetName) {
+            let nextTab = tabs[index + 1] || tabs[index - 1];
+            if (nextTab) {
+              activeName = nextTab.name;
+            }
+          }
+        });
+      }
+
+      this.currentTab = activeName;
+      this.tabs = tabs.filter((tab) => tab.name !== targetName);
+    },
+  },
 };
 </script>
 <style scoped>
