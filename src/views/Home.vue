@@ -36,48 +36,22 @@
             router
             @select="selectMenu"
           >
-            <el-menu-item index="/dashboard">
-              <i class="el-icon-monitor"></i>
-              <span slot="title">控制台</span>
-            </el-menu-item>
-            <el-submenu index="1">
+            <el-submenu
+              v-for="menu in menus"
+              :key="menu.name"
+              :index="menu.name"
+            >
               <template slot="title">
-                <i class="el-icon-setting"></i>
-                <span>系统管理</span>
+                <i :class="menu.icon"></i>
+                <span>{{ menu.name }}</span>
               </template>
-              <el-menu-item index="/user">
-                <i class="el-icon-user"></i>
-                <span slot="title">人员管理</span>
-              </el-menu-item>
-              <el-menu-item index="/role">
-                <i class="el-icon-s-custom"></i>
-                <span slot="title">部门管理</span>
-              </el-menu-item>
-              <el-menu-item index="1-4">
-                <i class="el-icon-document-remove"></i>
-                <span slot="title">角色管理</span>
-              </el-menu-item>
-              <el-menu-item index="1-5">
-                <i class="el-icon-key"></i>
-                <span slot="title">权限管理</span>
-              </el-menu-item>
-            </el-submenu>
-            <el-submenu index="2">
-              <template slot="title">
-                <i class="el-icon-service"></i>
-                <span>运营中心</span>
-              </template>
-              <el-menu-item index="2-1">
-                <i class="el-icon-medal"></i>
-                <span slot="title">团队管理</span>
-              </el-menu-item>
-              <el-menu-item index="2-2">
-                <i class="el-icon-data-line"></i>
-                <span slot="title">业绩报表</span>
-              </el-menu-item>
-              <el-menu-item index="2-3">
-                <i class="el-icon-phone"></i>
-                <span slot="title">客户回访</span>
+              <el-menu-item
+                v-for="item in menu.items"
+                :key="item.name"
+                :index="item.path"
+              >
+                <i :class="item.icon"></i>
+                <span slot="title">{{ item.name }}</span>
               </el-menu-item>
             </el-submenu>
           </el-menu>
@@ -85,8 +59,8 @@
         <div class="main">
           <div class="breadnav">
             <el-breadcrumb separator="/">
-              <el-breadcrumb-item>系统管理</el-breadcrumb-item>
-              <el-breadcrumb-item>人员管理</el-breadcrumb-item>
+              <el-breadcrumb-item>{{ breadcrumbs[0] }}</el-breadcrumb-item>
+              <el-breadcrumb-item>{{ breadcrumbs[1] }}</el-breadcrumb-item>
             </el-breadcrumb>
           </div>
           <el-divider></el-divider>
@@ -95,7 +69,7 @@
               <router-view></router-view>
             </transition> -->
             <el-tabs
-              v-model="currentTab"
+              v-model="currentTabName"
               type="border-card"
               closable
               @tab-remove="removeTab"
@@ -107,7 +81,9 @@
                 :label="item.title"
                 :name="item.name"
               >
-                <router-view></router-view>
+                <keep-alive>
+                  <router-view></router-view>
+                </keep-alive>
               </el-tab-pane>
             </el-tabs>
           </div>
@@ -121,23 +97,69 @@
 export default {
   data() {
     return {
-      currentTab: "/role",
+      breadcrumbs: ["工作台", "主面板"],
+      menus: [
+        {
+          name: "工作台",
+          path: "",
+          icon: "el-icon-monitor",
+          items: [
+            {
+              name: "主面板",
+              path: "/dashboard",
+              icon: "el-icon-tickets",
+            },
+          ],
+        },
+        {
+          name: "系统管理",
+          path: "",
+          icon: "el-icon-setting",
+          items: [
+            {
+              name: "人员管理",
+              path: "/user",
+              icon: "el-icon-user",
+            },
+            {
+              name: "角色管理",
+              path: "/role",
+              icon: "el-icon-document-remove",
+            },
+          ],
+        },
+      ],
+      currentTabName: "/dashboard",
       tabs: [
         {
-          title: "Tab 1",
-          name: "/role",
-          content: "/role",
-        },
-        {
-          title: "Tab 2",
-          name: "/user",
-          content: "/user",
-        },
+          title: "工作台",
+          name: "/dashboard"
+        }
       ],
     };
   },
+  watch: {
+    $route(to, from) {
+      var dest = to.path;
+      if (dest) {
+        for (let i = 0; i < this.menus.length; i++) {
+          const menu = this.menus[i];
+
+          for (let j = 0; j < menu.items.length; j++) {
+            const item = menu.items[j];
+            if (item.path === dest) {
+              this.breadcrumbs = [];
+              this.breadcrumbs.push(menu.name);
+              this.breadcrumbs.push(item.name);
+              break;
+            }
+          }
+        }
+      }
+    },
+  },
   created() {
-    console.log(this.$router);
+    this.$router.replace("/");
   },
   methods: {
     handleCommand(command) {
@@ -145,16 +167,27 @@ export default {
         this.$router.push("login");
       }
     },
-    selectMenu(index, indexPath) {
+    selectMenu(index, data) {
+      let title = "";
+      for (let i = 0; i < this.menus.length; i++) {
+        const menu = this.menus[i];
+        for (let j = 0; j < menu.items.length; j++) {
+          const item = menu.items[j];
+          if (item.path === index) {
+            title = item.name;
+            break;
+          }
+        }
+      }
       var tab = this.tabs.findIndex((a) => a.name == index);
       if (tab < 0) {
         this.tabs.push({
-          title: "Tab " + (this.tabs.length + 1).toString(),
+          title: title,
           name: index,
           content: index,
         });
       }
-      this.currentTab = index;
+      this.currentTabName = index;
     },
     clickTab(tab) {
       if (this.$route.path != tab.name) {
@@ -162,18 +195,9 @@ export default {
         this.$router.push(route);
       }
     },
-    addTab(targetName) {
-      let newTabName = ++this.tabIndex + "";
-      this.tabs.push({
-        title: "New Tab",
-        name: newTabName,
-        content: "New Tab content",
-      });
-      this.currentTab = newTabName;
-    },
     removeTab(targetName) {
       let tabs = this.tabs;
-      let activeName = this.currentTab;
+      let activeName = this.currentTabName;
       if (activeName === targetName) {
         tabs.forEach((tab, index) => {
           if (tab.name === targetName) {
@@ -185,8 +209,13 @@ export default {
         });
       }
 
-      this.currentTab = activeName;
+      this.currentTabName = activeName;
       this.tabs = tabs.filter((tab) => tab.name !== targetName);
+
+      if (this.$route.path != activeName) {
+        var route = activeName.substring(1);
+        this.$router.push(route);
+      }
     },
   },
 };
@@ -217,7 +246,7 @@ export default {
 }
 
 .header {
-  height: 80px;
+  height: 65px;
   display: flex;
   justify-content: space-between;
   border-bottom: 1px solid #393d49;
@@ -226,7 +255,8 @@ export default {
 .header .logo {
   width: 260px;
   color: #dfdddd;
-  font-size: 22px;
+  font-size: 20px;
+  font-weight: bold;
 }
 
 .header .logo img {
@@ -251,7 +281,6 @@ export default {
   border-right: none;
 }
 .main {
-  padding: 20px;
   background-color: #f2f2f2;
   flex: 1;
 }
@@ -261,6 +290,7 @@ export default {
 .main .breadnav {
   padding: 15px;
   background-color: #fff;
+  margin: 15px;
 }
 
 .main .content {

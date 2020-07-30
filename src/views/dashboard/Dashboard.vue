@@ -19,11 +19,11 @@ export default {
   },
   methods: {
     getData() {
-      http.get("api/values",null,(res)=>{
-        console.log(res);
-      },error=>{
-        console.log(error);
-      })
+      // http.get("api/values",null,(res)=>{
+      //   console.log(res);
+      // },error=>{
+      //   console.log(error);
+      // })
     }
   }
 };
