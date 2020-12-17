@@ -28,12 +28,12 @@
       <div class="container">
         <div class="aside">
           <el-menu
-            :default-active="'/dashboard'"
+           
             class="el-menu-vertical-demo"
             background-color="#545c64"
             text-color="#fff"
             active-text-color="#ffd04b"
-            router
+          
             @select="selectMenu"
           >
             <el-submenu
@@ -48,7 +48,8 @@
               <el-menu-item
                 v-for="item in menu.items"
                 :key="item.name"
-                :index="item.path"
+                :index="item.component"
+                
               >
                 <i :class="item.icon"></i>
                 <span slot="title">{{ item.name }}</span>
@@ -81,9 +82,10 @@
                 :label="item.title"
                 :name="item.name"
               >
-                <keep-alive>
+                <!-- <keep-alive>
                   <router-view></router-view>
-                </keep-alive>
+                </keep-alive> -->
+                <component :is="item.content" />
               </el-tab-pane>
             </el-tabs>
           </div>
@@ -94,6 +96,10 @@
 </template>
 
 <script>
+const User = () => import("@/views/user/User");
+const Role = () => import("@/views/role/Role");
+const Dashboard = () => import("@/views/dashboard/Dashboard");
+
 export default {
   data() {
     return {
@@ -101,65 +107,49 @@ export default {
       menus: [
         {
           name: "工作台",
-          path: "",
+          component: "",
           icon: "el-icon-monitor",
           items: [
             {
               name: "主面板",
-              path: "/dashboard",
+              component: "Dashboard",
               icon: "el-icon-tickets",
             },
           ],
         },
         {
           name: "系统管理",
-          path: "",
+          component: "",
           icon: "el-icon-setting",
           items: [
             {
               name: "人员管理",
-              path: "/user",
+              component: "User",
               icon: "el-icon-user",
             },
             {
               name: "角色管理",
-              path: "/role",
+              component: "Role",
               icon: "el-icon-document-remove",
             },
           ],
         },
       ],
-      currentTabName: "/dashboard",
+      currentTabName: "Dashboard",
       tabs: [
         {
-          title: "工作台",
-          name: "/dashboard"
-        }
+          title: "主面板",
+          name: "Dashboard",
+        },
       ],
     };
   },
-  watch: {
-    $route(to, from) {
-      var dest = to.path;
-      if (dest) {
-        for (let i = 0; i < this.menus.length; i++) {
-          const menu = this.menus[i];
-
-          for (let j = 0; j < menu.items.length; j++) {
-            const item = menu.items[j];
-            if (item.path === dest) {
-              this.breadcrumbs = [];
-              this.breadcrumbs.push(menu.name);
-              this.breadcrumbs.push(item.name);
-              break;
-            }
-          }
-        }
-      }
-    },
+  components: {
+    User,
+    Dashboard,
+    Role
   },
   created() {
-    this.$router.replace("/");
   },
   methods: {
     handleCommand(command) {
@@ -167,33 +157,31 @@ export default {
         this.$router.push("login");
       }
     },
-    selectMenu(index, data) {
+    selectMenu(component, data) {
       let title = "";
       for (let i = 0; i < this.menus.length; i++) {
         const menu = this.menus[i];
         for (let j = 0; j < menu.items.length; j++) {
           const item = menu.items[j];
-          if (item.path === index) {
+          if (item.component === component) {
             title = item.name;
             break;
           }
         }
-      }
-      var tab = this.tabs.findIndex((a) => a.name == index);
+      }     
+
+      var tab = this.tabs.findIndex((a) => a.name == component);
       if (tab < 0) {
         this.tabs.push({
           title: title,
-          name: index,
-          content: index,
+          name: component,
+          content: component,
         });
       }
-      this.currentTabName = index;
+      this.currentTabName = component;
     },
     clickTab(tab) {
-      if (this.$route.path != tab.name) {
-        var route = tab.name.substring(1);
-        this.$router.push(route);
-      }
+     let tabs = this.tabs;
     },
     removeTab(targetName) {
       let tabs = this.tabs;
@@ -211,11 +199,6 @@ export default {
 
       this.currentTabName = activeName;
       this.tabs = tabs.filter((tab) => tab.name !== targetName);
-
-      if (this.$route.path != activeName) {
-        var route = activeName.substring(1);
-        this.$router.push(route);
-      }
     },
   },
 };

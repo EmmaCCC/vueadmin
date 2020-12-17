@@ -45,6 +45,7 @@
 </template>
 
 <script>
+
 export default {
   data() {
     return {
@@ -99,7 +100,9 @@ export default {
       this.query.size = size;
     },
     handleClick(row) {
-      console.log(row);
+      console.log(this.$router);
+     
+      // console.log(this.$root.addTab());
     }
   }
 };

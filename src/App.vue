@@ -9,7 +9,17 @@
 <script>
 export default {
   name: "app",
-  components: {}
+  components: {},
+  data(){
+    return {
+      msg:"123",
+    }
+  },
+  methods:{
+    addTab(){
+       console.log(this.$router.$options.$routes);
+    }
+  }
 };
 </script>
 
