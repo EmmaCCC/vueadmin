@@ -28,12 +28,10 @@
       <div class="container">
         <div class="aside">
           <el-menu
-           
             class="el-menu-vertical-demo"
             background-color="#545c64"
             text-color="#fff"
             active-text-color="#ffd04b"
-          
             @select="selectMenu"
           >
             <el-submenu
@@ -49,7 +47,6 @@
                 v-for="item in menu.items"
                 :key="item.name"
                 :index="item.component"
-                
               >
                 <i :class="item.icon"></i>
                 <span slot="title">{{ item.name }}</span>
@@ -66,9 +63,6 @@
           </div>
           <el-divider></el-divider>
           <div class="content">
-            <!-- <transition name="fade" mode="out-in">
-              <router-view></router-view>
-            </transition> -->
             <el-tabs
               v-model="currentTabName"
               type="border-card"
@@ -82,9 +76,6 @@
                 :label="item.title"
                 :name="item.name"
               >
-                <!-- <keep-alive>
-                  <router-view></router-view>
-                </keep-alive> -->
                 <component :is="item.content" />
               </el-tab-pane>
             </el-tabs>
@@ -99,6 +90,7 @@
 const User = () => import("@/views/user/User");
 const Role = () => import("@/views/role/Role");
 const Dashboard = () => import("@/views/dashboard/Dashboard");
+import Vue from "vue";
 
 export default {
   data() {
@@ -147,9 +139,10 @@ export default {
   components: {
     User,
     Dashboard,
-    Role
+    Role,
   },
   created() {
+    Vue.prototype.$home = this;
   },
   methods: {
     handleCommand(command) {
@@ -168,7 +161,7 @@ export default {
             break;
           }
         }
-      }     
+      }
 
       var tab = this.tabs.findIndex((a) => a.name == component);
       if (tab < 0) {
@@ -181,7 +174,7 @@ export default {
       this.currentTabName = component;
     },
     clickTab(tab) {
-     let tabs = this.tabs;
+      console.log(this.$refs);
     },
     removeTab(targetName) {
       let tabs = this.tabs;

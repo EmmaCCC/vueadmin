@@ -100,7 +100,7 @@ export default {
       this.query.size = size;
     },
     handleClick(row) {
-      console.log(this.$router);
+      console.log(this.$home);
      
       // console.log(this.$root.addTab());
     }
