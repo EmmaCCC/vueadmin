@@ -57,8 +57,12 @@
         <div class="main">
           <div class="breadnav">
             <el-breadcrumb separator="/">
-              <el-breadcrumb-item>{{ breadcrumbs[0] }}</el-breadcrumb-item>
-              <el-breadcrumb-item>{{ breadcrumbs[1] }}</el-breadcrumb-item>
+              <el-breadcrumb-item>{{
+                new Date().toLocaleDateString()
+              }}</el-breadcrumb-item>
+              <el-breadcrumb-item>{{
+                weeks[new Date().getDay()]
+              }}</el-breadcrumb-item>
             </el-breadcrumb>
           </div>
           <el-divider></el-divider>
@@ -76,7 +80,7 @@
                 :label="item.title"
                 :name="item.name"
               >
-                <component :is="item.content" />
+                <component :is="item.content" :param="item.param" />
               </el-tab-pane>
             </el-tabs>
           </div>
@@ -87,15 +91,32 @@
 </template>
 
 <script>
+import globalBus from "@/global/bus";
 const User = () => import("@/views/user/User");
+const UserDetail = () => import("@/views/user/UserDetail");
 const Role = () => import("@/views/role/Role");
 const Dashboard = () => import("@/views/dashboard/Dashboard");
 import Vue from "vue";
 
 export default {
+  components: {
+    User,
+    Dashboard,
+    Role,
+    UserDetail
+  },
   data() {
     return {
-      breadcrumbs: ["工作台", "主面板"],
+      weeks: [
+        "",
+        "星期一",
+        "星期二",
+        "星期三",
+        "星期四",
+        "星期五",
+        "星期六",
+        "星期日",
+      ],
       menus: [
         {
           name: "工作台",
@@ -134,13 +155,10 @@ export default {
           name: "Dashboard",
         },
       ],
+      refreshKey: 0,
     };
   },
-  components: {
-    User,
-    Dashboard,
-    Role,
-  },
+
   created() {
     Vue.prototype.$home = this;
   },
@@ -174,7 +192,21 @@ export default {
       this.currentTabName = component;
     },
     clickTab(tab) {
-      console.log(this.$refs);
+      console.log(this.$components[tab.name]);
+    },
+
+    addTab(data) {
+      let name = data.name;
+      let tab = this.tabs.findIndex((a) => a.name == name);
+      if (tab < 0) {
+        this.tabs.push({
+          title: data.title,
+          name: data.name,
+          content: data.content,
+          param: data.param,
+        });
+      }
+      this.currentTabName = name;
     },
     removeTab(targetName) {
       let tabs = this.tabs;
@@ -192,6 +224,8 @@ export default {
 
       this.currentTabName = activeName;
       this.tabs = tabs.filter((tab) => tab.name !== targetName);
+
+       this.$components[targetName] = null;
     },
   },
 };
