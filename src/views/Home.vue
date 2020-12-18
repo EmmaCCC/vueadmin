@@ -59,8 +59,8 @@
         <div class="main">
           <div class="breadnav">
             <el-breadcrumb separator="/">
-              <el-breadcrumb-item>{{ breadcrumbs[0] }}</el-breadcrumb-item>
-              <el-breadcrumb-item>{{ breadcrumbs[1] }}</el-breadcrumb-item>
+              <el-breadcrumb-item v-for="item in breadcrumbs" :key="item">{{item}}</el-breadcrumb-item>
+             
             </el-breadcrumb>
           </div>
           <el-divider></el-divider>
@@ -81,10 +81,10 @@
                 :label="item.title"
                 :name="item.name"
               >
-                <keep-alive>
-                  <router-view></router-view>
-                </keep-alive>
               </el-tab-pane>
+             
+                <router-view ref="currentRouter"></router-view>
+              
             </el-tabs>
           </div>
         </div>
@@ -133,28 +133,46 @@ export default {
       tabs: [
         {
           title: "工作台",
-          name: "/dashboard"
-        }
+          name: "/dashboard",
+        },
       ],
     };
   },
   watch: {
     $route(to, from) {
-      var dest = to.path;
+      var dest = to.fullPath;
+      let title = to.params.title;
+      this.breadcrumbs = [];
+
+      var tab = this.tabs.find((a) => a.name == dest);
+      if (!tab) {
+        this.tabs.push({
+          title: title,
+          name: dest,
+        });
+      } else {
+        title = tab.title;
+      }
+
+      this.currentTabName = dest;
+
       if (dest) {
         for (let i = 0; i < this.menus.length; i++) {
           const menu = this.menus[i];
 
           for (let j = 0; j < menu.items.length; j++) {
             const item = menu.items[j];
-            if (item.path === dest) {
-              this.breadcrumbs = [];
+            if (item.path === to.path) {
               this.breadcrumbs.push(menu.name);
               this.breadcrumbs.push(item.name);
               break;
             }
           }
         }
+      }
+
+      if (!this.breadcrumbs.includes(title)) {
+        this.breadcrumbs.push(title);
       }
     },
   },
@@ -184,16 +202,16 @@ export default {
         this.tabs.push({
           title: title,
           name: index,
-          content: index,
         });
       }
       this.currentTabName = index;
     },
     clickTab(tab) {
-      if (this.$route.path != tab.name) {
+      if (this.$route.fullPath != tab.name) {
         var route = tab.name.substring(1);
         this.$router.push(route);
       }
+
     },
     removeTab(targetName) {
       let tabs = this.tabs;
@@ -212,7 +230,7 @@ export default {
       this.currentTabName = activeName;
       this.tabs = tabs.filter((tab) => tab.name !== targetName);
 
-      if (this.$route.path != activeName) {
+      if (this.$route.fullPath != activeName) {
         var route = activeName.substring(1);
         this.$router.push(route);
       }
