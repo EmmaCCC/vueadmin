@@ -11,7 +11,7 @@
         </el-select>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" >查询</el-button>
+        <el-button type="primary">查询</el-button>
       </el-form-item>
     </el-form>
     <el-table :data="tableData" border style="width: 100%">
@@ -23,7 +23,9 @@
       <el-table-column prop="zip" label="邮编" width="120"></el-table-column>
       <el-table-column label="操作" width="250">
         <template slot-scope="scope">
-          <el-button @click="handleClick(scope.row)" type="primary" size="small">查看</el-button>
+          <el-button @click="handleClick(scope.row)" type="primary" size="small"
+            >查看</el-button
+          >
           <el-button type="success" size="small">编辑</el-button>
           <el-button type="danger" size="small">删除</el-button>
         </template>
@@ -45,14 +47,18 @@
 </template>
 
 <script>
+import globalBus from "@/global/bus";
 
 export default {
+  props: {
+    param: { type: Object }
+  },
   data() {
     return {
       query: {
         page: 1,
         size: 10,
-        total: 0
+        total: 0,
       },
       tableData: [
         {
@@ -61,7 +67,7 @@ export default {
           province: "上海",
           city: "普陀区",
           address: "上海市普陀区金沙江路 1518 弄",
-          zip: 200333
+          zip: 200333,
         },
         {
           date: "2016-05-04",
@@ -69,7 +75,7 @@ export default {
           province: "上海",
           city: "普陀区",
           address: "上海市普陀区金沙江路 1517 弄",
-          zip: 200333
+          zip: 200333,
         },
         {
           date: "2016-05-01",
@@ -77,7 +83,7 @@ export default {
           province: "上海",
           city: "普陀区",
           address: "上海市普陀区金沙江路 1519 弄",
-          zip: 200333
+          zip: 200333,
         },
         {
           date: "2016-05-03",
@@ -85,9 +91,9 @@ export default {
           province: "上海",
           city: "普陀区",
           address: "上海市普陀区金沙江路 1516 弄",
-          zip: 200333
-        }
-      ]
+          zip: 200333,
+        },
+      ],
     };
   },
   components: {},
@@ -100,11 +106,16 @@ export default {
       this.query.size = size;
     },
     handleClick(row) {
-      console.log(this.$router);
-     
-      // console.log(this.$root.addTab());
-    }
-  }
+
+      let departmentId = "1";
+      globalBus.$emit("addTab", {
+        content: "User",
+        name: "User_"+JSON.stringify(this.param),
+        title: "企业信息",
+        param:{ id:1}
+      });
+    },
+  },
 };
 </script>
 <style lang="scss" scoped></style>

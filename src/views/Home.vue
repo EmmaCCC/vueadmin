@@ -28,12 +28,10 @@
       <div class="container">
         <div class="aside">
           <el-menu
-           
             class="el-menu-vertical-demo"
             background-color="#545c64"
             text-color="#fff"
             active-text-color="#ffd04b"
-          
             @select="selectMenu"
           >
             <el-submenu
@@ -49,7 +47,6 @@
                 v-for="item in menu.items"
                 :key="item.name"
                 :index="item.component"
-                
               >
                 <i :class="item.icon"></i>
                 <span slot="title">{{ item.name }}</span>
@@ -85,7 +82,7 @@
                 <!-- <keep-alive>
                   <router-view></router-view>
                 </keep-alive> -->
-                <component :is="item.content" />
+                <component :is="item.content" :param="item.param" />
               </el-tab-pane>
             </el-tabs>
           </div>
@@ -96,6 +93,7 @@
 </template>
 
 <script>
+import globalBus from "@/global/bus";
 const User = () => import("@/views/user/User");
 const Role = () => import("@/views/role/Role");
 const Dashboard = () => import("@/views/dashboard/Dashboard");
@@ -147,9 +145,12 @@ export default {
   components: {
     User,
     Dashboard,
-    Role
+    Role,
   },
   created() {
+    globalBus.$on("addTab", (data) => {
+      this.addTabOn(data);
+    });
   },
   methods: {
     handleCommand(command) {
@@ -168,7 +169,7 @@ export default {
             break;
           }
         }
-      }     
+      }
 
       var tab = this.tabs.findIndex((a) => a.name == component);
       if (tab < 0) {
@@ -181,7 +182,20 @@ export default {
       this.currentTabName = component;
     },
     clickTab(tab) {
-     let tabs = this.tabs;
+      let tabs = this.tabs;
+    },
+    addTabOn(data) {
+      let name = data.name;
+      let tab = this.tabs.findIndex((a) => a.name == name);
+      if (tab < 0) {
+        this.tabs.push({
+          title: data.title,
+          name: data.name,
+          content: data.content,
+          param:data.param
+        });
+      }
+      this.currentTabName = name;
     },
     removeTab(targetName) {
       let tabs = this.tabs;
